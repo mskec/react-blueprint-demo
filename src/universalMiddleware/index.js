@@ -67,14 +67,16 @@ function universalReactAppMiddleware(request: $Request, response: $Response) {
       return;
     }
 
-    response.status(
-      renderResult.missed
-        // If the renderResult contains a "missed" match then we set a 404 code.
-        // Our App component will handle the rendering of an Error404 view.
-        ? 404
-        // Otherwiser everthing is all good and we send a 200 OK status.
-        : 200
-      ).send(html);
+    response
+      .status(
+        renderResult.missed
+          // If the renderResult contains a "missed" match then we set a 404 code.
+          // Our App component will handle the rendering of an Error404 view.
+          ? 404
+          // Otherwiser everthing is all good and we send a 200 OK status.
+          : 200
+      )
+      .send(html);
   };
 
   // Execute any 'prefetchData' tasks that get matched for the request location.

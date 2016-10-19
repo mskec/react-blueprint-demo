@@ -16,38 +16,7 @@ type TaskExecutionResult = {
  * that multiple tasks could be executed. All the resolved tasks are executed
  * via the Promise.all API.
  *
- *
- *
- *    meaning that the results resolved
- * from the promise will be an array with each indice being the result for
- * one of the tasks that were executed.
- *
- * Therefore in your tasks you may want to return a data structure that will
- * allow you to easily know the type of data that was being returned.
- *
- * @example
- *
- *  const routeTasks = [
- *    {
- *      pattern: '/foo',
- *      prefetchData: () =>
- *        axios.get('http://foo').then(data => ({ type: 'foo', data }))
- *    }
- *  ];
- *
- *  const executingTasks = runTasksForLocation(location, 'prefetchData');
- *
- *  if (executingTasks) {
- *    executingTasks
- *      // We get the results for the executingTasks promise
- *     .then(results =>
- *        results
- *          // We filter them down to the 'foo' data type.
- *          .filter(result => result && result.type && result.type === 'foo')
- *          // And print the data out to the console.
- *          .forEach(result => console.log('Foo data:', result.data))
- *     );
- *  }
+ * @see README.md local to this file for more information.
  */
 function runTasksForLocation(
   location: Location,

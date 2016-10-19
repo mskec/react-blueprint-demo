@@ -11,8 +11,7 @@ import * as PostActions from '../actions/posts';
  * This is handy for things like prefetching of data on the server.  Please
  * see the README.md for more information.
  *
- * @see https://github.com/ReactTraining/react-router-addons-routes#route-configuration-shape
- * @see ./README.md
+ * @see README.md local to this file for more information.
  *
  * Note: if your route tasks collection starts to get large consider using
  * a memoize function, such as the one available from lodash to avoid
@@ -22,7 +21,6 @@ function taskRoutes({ dispatch } : TaskRouteLocals) {
   return [
     {
       pattern: '/posts/:id',
-      exactly: true,
       prefetchData: ({ id } : { id: number }) => dispatch(PostActions.fetch(id)),
       // deferredData: () => new Promise(resolve => setTimeout(resolve, 2000)),
     },

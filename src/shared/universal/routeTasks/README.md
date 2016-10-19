@@ -48,6 +48,37 @@ All tasks have to return a `Promise`, which gives us the capability to know when
 
 Using this we can then fire all our `prefetchData` tasks on the server, which in this project fires `redux-thunk` actions that return promises.  We then wait for the promises to complete, after which we can safely assume that we have fetched all the data required for the components we expect to mount against the location.
 
+Add your tasks to the `./taskRoutes` file, and then feel free to use the `./runTasksForLocation` utility function in order to execute specified tasks for a given location.  This utility function returns a Promise if some tasks were run, else it returns undefined.  Once the Promise is resolved you can consider all your tasks completed.
+
+```js
+const store = configureStore();
+
+// Given the following task routes within taskRoutes.js
+function taskRoutes(locals) {
+  return [
+    {
+      pattern: '/posts/:id',
+      prefetchData: ({ id }) => locals.dispatch(PostActions.fetch(id)),
+    },
+  ];
+}
+
+// Then executing our utility function targeting 'prefetchData' task
+const executingTasks = runTasksForLocation(
+  { pathname: '/posts/123' },
+  ['prefetchData'],
+  { dispatch: store.dispatch } // locals to pass to our taskRoutes.
+);
+
+if (executingTasks) {
+  // Some tasks were match and are executing.
+  executingTasks.then(() => {
+    console.log(store.getState()); // should show state populated with Post "123".
+  });
+}
+```
+
+
 Feel free to change the structure of the tasks, inventing your own as you please.  I have created a `runTasksForLocation` utility function that will allow you to execute any named tasks that you provide.  You could for example add a `logging` task.
 
 ___NOTE:___ YOU DO NOT HAVE TO DEFINE ROUTES WITHIN THE `taskRoutes` FILE TO MATCH ALL OF YOUR EXPECTED APPLICATION ROUTES. ONLY DEFINE ROUTES ON WHICH YOU HAVE DATA FETCH REQUIREMENTS FOR.

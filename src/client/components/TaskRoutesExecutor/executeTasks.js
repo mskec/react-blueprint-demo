@@ -2,7 +2,7 @@
 
 import type { Location } from '../../../shared/universal/types/react-router';
 import type { Dispatch, ThunkAction } from '../../../shared/universal/types/redux';
-import runTasksForLocation from '../../../shared/universal/routing/runTasksForLocation';
+import runTasksForLocation from '../../../shared/universal/routeTasks/runTasksForLocation';
 
 function executeTasks(location: Location, dispatch: Dispatch<ThunkAction>) {
   const tasksToExecute = window && window.APP_STATE

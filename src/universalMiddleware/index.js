@@ -5,7 +5,7 @@ import React from 'react';
 import { ServerRouter, createServerRenderContext } from 'react-router';
 import { Provider } from 'react-redux';
 import render from './render';
-import runTasksForLocation from '../shared/universal/routing/runTasksForLocation';
+import runTasksForLocation from '../shared/universal/routeTasks/runTasksForLocation';
 import App from '../shared/universal/components/App';
 import configureStore from '../shared/universal/redux/configureStore';
 

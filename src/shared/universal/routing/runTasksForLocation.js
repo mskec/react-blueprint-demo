@@ -1,7 +1,6 @@
 /* @flow */
 
-import matchRoutesToLocation from './temp/matchRoutesToLocation';
-// import matchRoutesToLocation from 'react-router-addons-routes/matchRoutesToLocation';
+import matchRoutesToLocation from 'react-router-addons-routes/matchRoutesToLocation';
 
 import taskRoutes from './taskRoutes';
 import type { Location, TaskRouteLocals } from '../types/react-router';

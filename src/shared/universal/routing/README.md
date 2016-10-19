@@ -46,7 +46,7 @@ Within this project we are using this mechanism to define all of the routes whic
 
 All tasks have to return a `Promise`, which gives us the capability to know when the task has completed.
 
-Using this we can then fire all our `prefetchData` tasks on the server, which in this project fires `redux-thunk` actions which return promises, and then wait for them to complete.  After they have completed we can safely assume all the data for any components that will be resolved on our application render will already have all their required data available to them.
+Using this we can then fire all our `prefetchData` tasks on the server, which in this project fires `redux-thunk` actions that return promises.  We then wait for the promises to complete, after which we can safely assume that we have fetched all the data required for the components we expect to mount against the location.
 
 Feel free to change the structure of the tasks, inventing your own as you please.  I have created a `runTasksForLocation` utility function that will allow you to execute any named tasks that you provide.  You could for example add a `logging` task.
 

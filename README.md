@@ -22,6 +22,8 @@ This is the `redux` branch of the `react-universally` starter kit.
 
 It provides you with the build tooling and configuration you need to kick off your next universal react redux project.
 
+> __NEW!__ If you really want an example of a data library integration along with an example of how to go about solving data prefetching for the server then feel free to take a look at the [`redux`](https://github.com/ctrlplusb/react-universally/tree/redux) branch which provides exactly this.
+
 ## Features
 
   - 🌍 Server side rendering.

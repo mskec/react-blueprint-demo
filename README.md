@@ -27,7 +27,7 @@ It provides you with the build tooling and configuration you need to kick off yo
 ## Features
 
   - 🌍 Server side rendering.
-  - 🔥 Extreme live development - hot reloading of client/server source as, with high level of error tolerance.
+  - 🔥 Extreme live development - hot reloading of client/server source, with high level of error tolerance, alongside a HappyPack and Vendor DLL (courtesy of @strues).
   - 🚄 `express` server.
   - 👮 Security on the `express` server using `helmet` and `hpp`.
   - 👀 `react` as the view.
@@ -40,7 +40,7 @@ It provides you with the build tooling and configuration you need to kick off yo
   - 📦 Bundling of both client and server using `webpack` v2.
   - ✂️ Client bundle is split by routes.
   - 🐘 Long term caching of the client bundle.
-  - 🍃 Tree-shaking, supported by `webpack`.  
+  - 🍃 Tree-shaking, supported by `webpack`.
   - ✔️ Type checking via Flow, a beautiful and unobtrusive type framework.
 
       __NOTE:__ Flow is a completely optional feature.  The flow type annotations get ripped out of the source by the webpack build step. You have no obligation to use flow within your code and can even uninstall the dependency (flow-bin) without breaking the project.  I do highly recommend you try it out though.
@@ -155,7 +155,7 @@ __Step 5: Deploy to "now"__
 
 The above command will create a temporary file to expose your `.env` file to the `now` host.  It will then deploy to `now` and subsequently delete the temp env file.
 
-That's it.  Your clipboard will contain the address of the deployed app. Open your browser, paste, go.  
+That's it.  Your clipboard will contain the address of the deployed app. Open your browser, paste, go.
 
 ## npm script commands##
 
@@ -192,6 +192,7 @@ Executes `flow-coverage-report`, generating a report on your type check coverage
 For those of us not wanting to use `flow`. Running this command removes all `flow` types from the src.
 
 __Warning:__ This is a destructive behavior - it modifies your actual source files. Please make sure you commit any existing changes to your src before running this command.
+
 
 ## Troubleshooting ##
 

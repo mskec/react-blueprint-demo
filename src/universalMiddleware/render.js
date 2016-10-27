@@ -6,6 +6,30 @@ import Helmet from 'react-helmet';
 import clientAssets from './clientAssets';
 import type { ReactElement } from '../shared/universal/types/react';
 
+// We use the polyfill.io service which provides the polyfills that a
+// client needs, rather than everything if we used babel-polyfill.
+// This keeps our bundle size down.
+// Note: this has to be included here, rather than imported via react-helmet
+// as we may need the polyfills to load our app in the first place! :)
+function polyfillIoScript() {
+  return '<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>';
+}
+
+// We use a service worker configured created by the sw-precache webpack plugin,
+// providing us with caching and offline application support.
+// @see https://github.com/goldhand/sw-precache-webpack-plugin
+// Please refer the webpack configuration for more information.
+function serviceWorkerScript() {
+  return `
+    <script type="text/javascript">
+      (function() {
+        if('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js');
+        }
+      })();
+    </script>`;
+}
+
 function styleTags(styles : Array<string>) {
   return styles
     .map(style =>
@@ -61,10 +85,8 @@ function render(reactAppElement : ?ReactElement, initialState : ?Object) {
   return `<!DOCTYPE html>
     <html ${helmet ? helmet.htmlAttributes.toString() : ''}>
       <head>
-        <meta charSet='utf-8' />
         <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
         <meta httpEquiv='Content-Language' content='en' />
-        <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
 
         ${helmet ? helmet.title.toString() : ''}
         ${helmet ? helmet.meta.toString() : ''}
@@ -73,7 +95,8 @@ function render(reactAppElement : ?ReactElement, initialState : ?Object) {
         ${styles}
         ${helmet ? helmet.style.toString() : ''}
 
-        <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+        ${polyfillIoScript()}
+        ${serviceWorkerScript()}
       </head>
       <body>
         <div id='app'>${reactApp}</div>

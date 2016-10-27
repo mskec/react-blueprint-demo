@@ -1,13 +1,15 @@
 const path = require('path');
+const globSync = require('glob').sync;
 const webpack = require('webpack');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const AssetsPlugin = require('assets-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const appRootPath = require('app-root-path').toString();
 const WebpackMd5Hash = require('webpack-md5-hash');
-
 const { removeEmpty, ifElse, merge, happyPackPlugin } = require('../utils');
 const envVars = require('../config/envVars');
+const appName = require('../../package.json').name;
 
 function webpackConfigFactory({ target, mode }, { json }) {
   if (!target || ['client', 'server', 'universalMiddleware'].findIndex(valid => target === valid) === -1) {
@@ -288,6 +290,46 @@ function webpackConfigFactory({ target, mode }, { json }) {
         // This is a production client so we will extract our CSS into
         // CSS files.
         new ExtractTextPlugin({ filename: '[name]-[chunkhash].css', allChunks: true })
+      ),
+
+      // Service Worker.
+      // @see https://github.com/goldhand/sw-precache-webpack-plugin
+      // This plugin generates a service worker script which as configured below
+      // will precache all our generated client bundle assets as well as the
+      // index page for our application.
+      // This gives us aggressive caching as well as offline support.
+      // Don't worry about cache invalidation. As we are using the Md5HashPlugin
+      // for our assets, any time their contents change they will be given
+      // unique file names, which will cause the service worker to fetch them.
+      ifProdClient(
+        new SWPrecacheWebpackPlugin(
+          {
+            // Note: The default cache size is 2mb. This can be reconfigured:
+            // maximumFileSizeToCacheInBytes: 2097152,
+            cacheId: `${appName}-sw`,
+            filepath: path.resolve(envVars.BUNDLE_OUTPUT_PATH, './serviceWorker/sw.js'),
+            dynamicUrlToDependencies: (() => {
+              const clientBundleAssets = globSync(
+                path.resolve(appRootPath, envVars.BUNDLE_OUTPUT_PATH, './client/*.js')
+              );
+              return globSync(path.resolve(appRootPath, './public/*'))
+                .reduce((acc, cur) => {
+                  // We will precache our public asset, with it being invalidated
+                  // any time our client bundle assets change.
+                  acc[`/${path.basename(cur)}`] = clientBundleAssets; // eslint-disable-line no-param-reassign,max-len
+                  return acc;
+                },
+                {
+                  // Our index.html page will be precatched and it will be
+                  // invalidated and refetched any time our client bundle
+                  // assets change.
+                  '/': clientBundleAssets,
+                  // Lets cache the call to the polyfill.io service too.
+                  'https://cdn.polyfill.io/v2/polyfill.min.js': clientBundleAssets,
+                });
+            })(),
+          }
+        )
       ),
 
       // HappyPack plugins

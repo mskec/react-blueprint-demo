@@ -50,7 +50,7 @@ It provides you with the build tooling and configuration you need to kick off yo
 
       __NOTE:__ Flow is a completely optional feature.  The flow type annotations get ripped out of the source by the webpack build step. You have no obligation to use flow within your code and can even uninstall the dependency (flow-bin) without breaking the project.  I do highly recommend you try it out though.
 
-      If you dont' want the types you can run `npm run flow:remove` to remove them from the src.  You'll just need to clean up a few empty lines thereafter.
+      If you don't want the types you can run `npm run flow:remove` to remove them from the src.  You'll just need to clean up a few empty lines thereafter.
   - 🎛 A development and optimized production configuration.
   - 🔧 Easy environment configuration via cli/host env vars and/or a [`dotenv`](https://github.com/motdotla/dotenv) file.
   - 👼 Airbnb's eslint configuration.

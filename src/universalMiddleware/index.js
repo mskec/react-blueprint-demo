@@ -13,13 +13,18 @@ import configureStore from '../shared/universal/redux/configureStore';
  * An express middleware that is capabable of doing React server side rendering.
  */
 function universalReactAppMiddleware(request: $Request, response: $Response) {
+  if (typeof response.locals.nonce !== 'string') {
+    throw new Error('A "nonce" value has not been attached to the response');
+  }
+  const nonce = response.locals.nonce;
+
   if (process.env.DISABLE_SSR === 'true') {
     if (process.env.NODE_ENV === 'development') {
       console.log('==> Handling react route without SSR');  // eslint-disable-line no-console
     }
     // SSR is disabled so we will just return an empty html page and will
     // rely on the client to initialize and render the react application.
-    const html = render();
+    const html = render({ nonce });
     response.status(200).send(html);
     return;
   }
@@ -48,13 +53,15 @@ function universalReactAppMiddleware(request: $Request, response: $Response) {
     );
 
     // Render the app to a string.
-    const html = render(
+    const html = render({
       // Provide the full app react element.
       app,
       // Provide the redux store state, this will be bound to the window.APP_STATE
       // so that we can rehydrate the state on the client.
-      getState()
-    );
+      initialState: getState(),
+      // The nonce for inline script security.
+      nonce,
+    });
 
     // Get the render result from the server render context.
     const renderResult = context.getResult();

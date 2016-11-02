@@ -1,22 +1,23 @@
 {
   "name": "react-universally",
-  "version": "8.3.0",
+  "version": "8.4.0",
   "description": "A starter kit giving you the minimum requirements for a production ready universal react application.",
   "main": "build/server/main.js",
   "engines": {
     "node": "~6.9.1"
   },
   "scripts": {
-    "clean": "rimraf build",
-    "development": "node ./tools/development",
-    "build": "npm run clean && webpack --config ./tools/webpack/client.config.js && webpack --config ./tools/webpack/universalMiddleware.config.js && webpack --config ./tools/webpack/server.config.js",
+    "clean": "node tools/scripts/clean",
+    "development": "node tools/development",
+    "build": "node tools/scripts/build",
+    "analyze": "node tools/scripts/analyze",
     "start": "node build/server",
     "deploy": "node tools/scripts/deploy",
     "lint": "eslint src",
-    "flow": "node ./tools/scripts/flow",
+    "flow": "node tools/scripts/flow",
     "flow:defs": "flow-typed install -f 0.34 --overwrite",
     "flow:report": "flow-coverage-report -i 'src/**/*.js' -t html -t json -t text",
-    "flow:remove": "node ./tools/flow/removeTypes.js && eslint --fix src"
+    "flow:remove": "node tools/scripts/removeTypes.js && rimraf tools/scripts/removeTypes.js"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,7 @@
   "dependencies": {
     "app-root-path": "2.0.1",
     "axios": "0.15.2",
-    "code-split-component": "1.0.0",
+    "code-split-component": "1.0.1",
     "compression": "1.6.2",
     "express": "4.14.0",
     "helmet": "3.0.0",
@@ -62,7 +63,7 @@
   "devDependencies": {
     "assets-webpack-plugin": "3.5.0",
     "babel-cli": "6.18.0",
-    "babel-core": "6.18.0",
+    "babel-core": "6.18.2",
     "babel-eslint": "7.1.0",
     "babel-loader": "6.2.7",
     "babel-plugin-transform-class-properties": "6.18.0",
@@ -74,12 +75,12 @@
     "colors": "1.1.2",
     "css-loader": "0.25.0",
     "dotenv": "2.0.0",
-    "eslint": "3.9.0",
+    "eslint": "3.9.1",
     "eslint-config-airbnb": "12.0.0",
     "eslint-plugin-flowtype": "2.25.0",
     "eslint-plugin-import": "1.16.0",
     "eslint-plugin-jsx-a11y": "2.2.3",
-    "eslint-plugin-react": "6.4.1",
+    "eslint-plugin-react": "6.5.0",
     "extract-text-webpack-plugin": "2.0.0-beta.4",
     "file-loader": "0.9.0",
     "flow-bin": "0.34.0",
@@ -98,6 +99,7 @@
     "sw-precache-webpack-plugin": "0.5.1",
     "url-loader": "0.5.7",
     "webpack": "2.1.0-beta.25",
+    "webpack-bundle-analyzer": "1.4.0",
     "webpack-dev-middleware": "1.8.4",
     "webpack-hot-middleware": "2.13.1",
     "webpack-md5-hash": "0.0.5",

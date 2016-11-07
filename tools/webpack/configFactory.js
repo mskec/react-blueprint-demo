@@ -10,6 +10,7 @@ const WebpackMd5Hash = require('webpack-md5-hash');
 const { removeEmpty, ifElse, merge, happyPackPlugin } = require('../utils');
 const envVars = require('../config/envVars');
 const appName = require('../../package.json').name;
+const CodeSplitPlugin = require('code-split-component/webpack');
 
 function webpackConfigFactory({ target, mode }, { json }) {
   if (!target || ['client', 'server', 'universalMiddleware'].findIndex(valid => target === valid) === -1) {
@@ -130,7 +131,7 @@ function webpackConfigFactory({ target, mode }, { json }) {
     entry: merge(
       {
         index: removeEmpty([
-          ifDevClient('react-hot-loader/patch'),
+          // ifDevClient('react-hot-loader/patch'),
           ifDevClient(`webpack-hot-middleware/client?reload=true&path=http://localhost:${envVars.CLIENT_DEVSERVER_PORT}/__webpack_hmr`),
           // We are using polyfill.io instead of the very heavy babel-polyfill.
           // Therefore we need to add the regenerator-runtime as the babel-polyfill
@@ -178,6 +179,13 @@ function webpackConfigFactory({ target, mode }, { json }) {
       ],
     },
     plugins: removeEmpty([
+      new CodeSplitPlugin({
+        // The code-split-component doesn't work nicely with hot module reloading,
+        // which we use in our development builds, so we will disable it (which
+        // ensures synchronously behaviour on the CodeSplit instances).
+        disabled: isDev,
+      }),
+
       // We use this so that our generated [chunkhash]'s are only different if
       // the content for our respective chunks have changed.  This optimises
       // our long term browser caching strategy for our client bundle, avoiding
@@ -369,6 +377,7 @@ function webpackConfigFactory({ target, mode }, { json }) {
               ['latest', { es2015: { modules: false } }],
             ],
             plugins: removeEmpty([
+              ifDevClient('react-hot-loader/babel'),
               // We are adding the experimental "object rest spread" syntax as
               // it is super useful.  There is a caviat with the plugin that
               // requires us to include the destructuring plugin too.
@@ -376,18 +385,24 @@ function webpackConfigFactory({ target, mode }, { json }) {
               'transform-es2015-destructuring',
               // The class properties plugin is really useful for react components.
               'transform-class-properties',
-              // We use the code-split-component/babel plugin and only enable
-              // code splitting when bundling a production client bundle.
-              // For our node and development client bundles we configure the
-              // code-split-component/babel so that it will transpile
-              // the System.import statements on our CodeSplit components
-              // into synchronous require statements. This then supports
-              // full server side rendering as well as React Hot Loader 3 on
-              // our development client bundle.
+              // This plugin transpiles the code-split-component component
+              // instances, taking care of all the heavy boilerplate that we
+              // would have had to do ourselves to get code splitting w/SSR
+              // support working.
               // @see https://github.com/ctrlplusb/code-split-component
               [
                 'code-split-component/babel',
-                { enableCodeSplitting: isProd && isClient },
+                {
+                  // The code-split-component doesn't work nicely with hot
+                  // module reloading, which we use in our development builds,
+                  // so we will disable it (which ensures synchronously
+                  // behaviour on the CodeSplit instances).
+                  disabled: isDev,
+                  // When a node target (i.e. a server rendering bundle) then
+                  // we will set the role as being server which will ensure that
+                  // our code split components are resolved synchronously.
+                  role: isNodeTarget ? 'server' : 'client',
+                },
               ],
             ]),
           },
